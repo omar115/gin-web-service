@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 // album represents data about a record album.
@@ -24,17 +25,17 @@ var albums = []album{
 }
 
 func main() {
-	port := os.Getenv("PORT")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	router := gin.Default()
 
-	if port == "" {
-		log.Fatal("$PORT must be set")
-	}
 	router.GET("/albums", getAlbums)
 	router.POST("/albums", postAlbums)
 	router.GET("/albums/:id", getAlbumByID)
 
-	router.Run(":" + port)
+	router.Run(":" + os.Getenv("PORT"))
 }
 
 // getAlbums responds with the list of all albums as JSON.
